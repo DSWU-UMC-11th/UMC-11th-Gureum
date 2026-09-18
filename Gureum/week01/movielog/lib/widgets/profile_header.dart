@@ -12,11 +12,12 @@ class ProfileHeader extends StatelessWidget {
       margin: const EdgeInsets.only(top: 8),
       child: Column(
         children: [
-          const CircleAvatar(
-            radius: 54,
-            backgroundColor: AppColors.violetContainer,
-            backgroundImage: AssetImage(
+          ClipOval(
+            child: Image.asset(
               'assets/images/profile/profile_movielog.jpg',
+              width: 108,
+              height: 108,
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(height: 18),
@@ -28,9 +29,9 @@ class ProfileHeader extends StatelessWidget {
             style: AppTextStyles.body,
           ),
           const SizedBox(height: 18),
-          OutlinedButton(
+          TextButton(
             onPressed: () {},
-            style: OutlinedButton.styleFrom(
+            style: TextButton.styleFrom(
               foregroundColor: AppColors.violet,
               side: const BorderSide(color: AppColors.violet),
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),

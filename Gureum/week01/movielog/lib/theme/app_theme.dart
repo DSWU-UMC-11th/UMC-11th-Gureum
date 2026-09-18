@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_colors.dart';
+import 'app_text_styles.dart';
 
 abstract final class AppTheme {
   static final ThemeData light = ThemeData(
@@ -16,6 +17,12 @@ abstract final class AppTheme {
       surface: AppColors.warmWhite,
       onSurface: AppColors.black,
       outline: AppColors.outline,
+    ),
+    textTheme: const TextTheme(
+      headlineSmall: AppTextStyles.headline,
+      titleLarge: AppTextStyles.title,
+      bodyMedium: AppTextStyles.body,
+      bodySmall: AppTextStyles.caption,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.warmWhite,
