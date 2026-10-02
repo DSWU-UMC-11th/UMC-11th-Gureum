@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:movielog/movie_log_app.dart';
+import 'package:movielog/router/app_router.dart';
+import 'package:movielog/screens/movie_list_screen.dart';
+import 'package:movielog/services/fake_movie_service.dart';
+import 'package:movielog/services/genre_preference.dart';
+
+class _MemoryGenreStore implements GenreStore {
+  String value = '전체';
+  @override
+  Future<String> read() async => value;
+  @override
+  Future<void> save(String genre) async => value = genre;
+}
+
+void main() {
+  testWidgets('시작 화면에서 회원가입 화면으로 이동한다', (tester) async {
+    AppRouter.router.go('/start');
+    await tester.pumpWidget(const MovieLogApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('영화의 순간을\n기록하세요'), findsOneWidget);
+    await tester.tap(find.widgetWithText(ElevatedButton, '시작하기'));
+    await tester.pumpAndSettle();
+    expect(find.text('MovieLog 시작하기'), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(3));
+  });
+
+  testWidgets('영화 목록에서 카드가 표시된다', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MovieListScreen(
+          movieService: const FakeMovieService(delay: Duration.zero),
+          genreStore: _MemoryGenreStore(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('영화'), findsWidgets);
+    expect(find.text('별빛 아래 우리'), findsOneWidget);
+    expect(find.byKey(const Key('movie-list-success')), findsOneWidget);
+  });
+}
