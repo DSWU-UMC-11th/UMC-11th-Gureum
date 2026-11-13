@@ -33,7 +33,7 @@ class MovieLogApp extends StatelessWidget {
         ),
         Provider<SignUpService>(create: (_) => SignUpService(movieLogClient)),
         Provider<RatingApiService>(
-          create: (_) => RatingApiService(movieLogClient),
+          create: (_) => RatingApiService(authenticatedClient),
         ),
         Provider<FavoriteApiService>(
           create: (_) => FavoriteApiService(movieLogClient),

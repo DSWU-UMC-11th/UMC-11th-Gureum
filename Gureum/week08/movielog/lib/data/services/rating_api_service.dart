@@ -8,6 +8,35 @@ class RatingApiService {
   const RatingApiService(this._dio);
   final Dio _dio;
 
+  Future<RatingDto> createV7(CreateRatingRequest request) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/v7/ratings',
+      data: request.toJson(),
+    );
+    return RatingDto.fromJson(response.data!['result'] as Map<String, dynamic>);
+  }
+
+  Future<RatingDto> updateV7({
+    required int ratingId,
+    required int score,
+    String? comment,
+  }) async {
+    final response = await _dio.patch<Map<String, dynamic>>(
+      '/v7/ratings/$ratingId',
+      data: {'score': score, 'comment': comment},
+    );
+    return RatingDto.fromJson(response.data!['result'] as Map<String, dynamic>);
+  }
+
+  Future<void> deleteV7(int ratingId) async {
+    final response = await _dio.delete<Map<String, dynamic>>(
+      '/v7/ratings/$ratingId',
+    );
+    if (response.statusCode != 200 || response.data?['result'] != null) {
+      throw StateError('예상하지 못한 삭제 응답입니다.');
+    }
+  }
+
   Future<List<RatingDto>> fetchMyRatings(int memberId) async {
     final response = await _dio.get<List<dynamic>>(
       '/v6/members/$memberId/ratings',
