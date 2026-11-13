@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../core/auth/token_storage.dart';
 
 class Week08JwtScreen extends StatefulWidget {
   const Week08JwtScreen({super.key});
@@ -7,7 +10,7 @@ class Week08JwtScreen extends StatefulWidget {
 }
 
 class _Week08JwtScreenState extends State<Week08JwtScreen> {
-  int selected = 0;
+  int selected = const int.fromEnvironment('WEEK8_JWT_TAB');
   @override
   Widget build(BuildContext context) {
     const tabs = ['로그인·GET me', '세션·로그아웃', '닉네임', '평점 v7', '보안'];
@@ -110,7 +113,7 @@ class _Week08JwtScreenState extends State<Week08JwtScreen> {
                 'movieId 550 → TMDB 영화 정보 결합',
               ],
             ),
-          if (selected == 4)
+          if (selected == 4) ...[
             const _Evidence(
               color: Colors.green,
               title: '민감정보 비노출 확인',
@@ -122,10 +125,47 @@ class _Week08JwtScreenState extends State<Week08JwtScreen> {
                 '401 ≠ 403 · 네트워크 오류에 토큰 유지',
               ],
             ),
+            const SizedBox(height: 12),
+            _SecureStorageProbe(context.read<TokenStorage>()),
+          ],
         ],
       ),
     );
   }
+}
+
+class _SecureStorageProbe extends StatelessWidget {
+  const _SecureStorageProbe(this.storage);
+  final TokenStorage storage;
+
+  Future<bool> _verify() async {
+    const sentinel = 'secure-storage-probe';
+    await storage.writeAccessToken(sentinel);
+    final restored = await storage.readAccessToken();
+    await storage.deleteAccessToken();
+    return restored == sentinel && await storage.readAccessToken() == null;
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<bool>(
+    future: _verify(),
+    builder: (context, snapshot) {
+      final done = snapshot.connectionState == ConnectionState.done;
+      final passed = snapshot.data == true;
+      return _Evidence(
+        color: passed ? Colors.green : Colors.orange,
+        title: done
+            ? passed
+                  ? '실제 플랫폼 secure storage · PASS'
+                  : 'secure storage · 확인 실패'
+            : 'secure storage · write/read/delete 확인 중',
+        lines: [
+          if (passed) '테스트 값을 저장·복원·삭제한 뒤 잔존 값 없음 확인',
+          '실제 JWT나 비밀번호는 테스트에 사용하지 않음',
+        ],
+      );
+    },
+  );
 }
 
 class _Evidence extends StatelessWidget {

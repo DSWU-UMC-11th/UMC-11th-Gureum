@@ -27,7 +27,10 @@ abstract final class AppRouter {
   static final _rootKey = GlobalKey<NavigatorState>();
   static final router = GoRouter(
     navigatorKey: _rootKey,
-    initialLocation: '/start',
+    initialLocation: const String.fromEnvironment(
+      'WEEK8_ROUTE',
+      defaultValue: '/start',
+    ),
     routes: [
       GoRoute(path: '/start', builder: (_, _) => const StartScreen()),
       GoRoute(path: '/week8', builder: (_, _) => const Week08PracticeScreen()),

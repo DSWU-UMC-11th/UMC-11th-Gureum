@@ -12,6 +12,7 @@ import 'data/services/tmdb_movie_service.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 import 'view_models/learning_member_session.dart';
+import 'view_models/auth_view_model.dart';
 
 class MovieLogApp extends StatelessWidget {
   const MovieLogApp({super.key, this.theme});
@@ -41,6 +42,11 @@ class MovieLogApp extends StatelessWidget {
         Provider<TokenStorage>.value(value: tokenStorage),
         Provider<AuthApiService>(
           create: (_) => AuthApiService(authenticatedClient, tokenStorage),
+        ),
+        ChangeNotifierProvider<AuthViewModel>(
+          create: (context) =>
+              AuthViewModel(context.read<AuthApiService>(), tokenStorage)
+                ..restoreSession(),
         ),
       ],
       child: MaterialApp.router(

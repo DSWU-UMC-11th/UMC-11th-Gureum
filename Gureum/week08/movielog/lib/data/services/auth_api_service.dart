@@ -3,11 +3,19 @@ import 'package:dio/dio.dart';
 import '../../core/auth/token_storage.dart';
 import '../models/auth_models.dart';
 
-class AuthApiService {
+abstract interface class AuthGateway {
+  Future<LoginResult> login(String email, String password);
+  Future<MemberProfile> fetchMe();
+  Future<MemberProfile> updateNickname(String nickname);
+  Future<void> logout();
+}
+
+class AuthApiService implements AuthGateway {
   const AuthApiService(this._dio, this._storage);
   final Dio _dio;
   final TokenStorage _storage;
 
+  @override
   Future<LoginResult> login(String email, String password) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/v7/auth/login',
@@ -20,6 +28,7 @@ class AuthApiService {
     return result;
   }
 
+  @override
   Future<MemberProfile> fetchMe() async {
     final response = await _dio.get<Map<String, dynamic>>('/v7/members/me');
     return MemberProfile.fromJson(
@@ -27,6 +36,7 @@ class AuthApiService {
     );
   }
 
+  @override
   Future<MemberProfile> updateNickname(String nickname) async {
     final response = await _dio.patch<Map<String, dynamic>>(
       '/v7/members/me',
@@ -37,6 +47,7 @@ class AuthApiService {
     );
   }
 
+  @override
   Future<void> logout() => _storage.deleteAccessToken();
 }
 
