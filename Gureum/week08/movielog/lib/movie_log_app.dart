@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 
 import 'core/network/tmdb_client.dart';
 import 'core/network/movie_log_client.dart';
+import 'core/auth/token_storage.dart';
 import 'data/services/sign_up_service.dart';
 import 'data/services/rating_api_service.dart';
 import 'data/services/favorite_api_service.dart';
+import 'data/services/auth_api_service.dart';
 import 'data/services/tmdb_movie_service.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
@@ -19,6 +21,8 @@ class MovieLogApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieLogClient = createMovieLogClient();
+    const tokenStorage = SecureTokenStorage();
+    final authenticatedClient = createAuthenticatedMovieLogClient(tokenStorage);
     return MultiProvider(
       providers: [
         Provider<TmdbMovieService>(
@@ -33,6 +37,10 @@ class MovieLogApp extends StatelessWidget {
         ),
         Provider<FavoriteApiService>(
           create: (_) => FavoriteApiService(movieLogClient),
+        ),
+        Provider<TokenStorage>.value(value: tokenStorage),
+        Provider<AuthApiService>(
+          create: (_) => AuthApiService(authenticatedClient, tokenStorage),
         ),
       ],
       child: MaterialApp.router(

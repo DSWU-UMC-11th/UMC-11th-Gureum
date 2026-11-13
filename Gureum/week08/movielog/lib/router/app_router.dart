@@ -15,6 +15,7 @@ import '../screens/my_ratings_screen.dart';
 import '../screens/sign_up_screen.dart';
 import '../screens/start_screen.dart';
 import '../screens/week08_practice_screen.dart';
+import '../screens/week08_jwt_screen.dart';
 import '../view_models/movie_home_view_model.dart';
 import '../view_models/movie_list_view_model.dart';
 import '../view_models/my_ratings_view_model.dart';
@@ -30,6 +31,7 @@ abstract final class AppRouter {
     routes: [
       GoRoute(path: '/start', builder: (_, _) => const StartScreen()),
       GoRoute(path: '/week8', builder: (_, _) => const Week08PracticeScreen()),
+      GoRoute(path: '/week8-jwt', builder: (_, _) => const Week08JwtScreen()),
       GoRoute(
         path: '/register',
         builder: (context, _) => ChangeNotifierProvider(
